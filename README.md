@@ -3,6 +3,9 @@
 A one-page site for Guesthouse TiinTiin, 87 Chris Hani Street, Potchefstroom.
 Built with React + Vite, GSAP (ScrollTrigger, SplitText, Flip), Lenis smooth scrolling, Three.js and React Bits components.
 
+**Live:** https://ystervarkies.github.io/tiintiin-guesthouse/
+Deploys automatically on every push to `main` via `.github/workflows/deploy.yml` (GitHub Actions → GitHub Pages).
+
 ## Run it
 
 ```bash
