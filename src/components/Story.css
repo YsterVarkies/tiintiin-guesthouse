@@ -143,17 +143,6 @@
 .story__fallback.is-hidden {
   opacity: 0;
 }
-.story__caption {
-  position: absolute;
-  left: 50%;
-  bottom: 26px;
-  translate: -50% 0;
-  width: max-content;
-  max-width: 90%;
-  text-align: center;
-  color: rgba(243, 238, 230, 0.62);
-}
-
 @media (max-width: 900px) {
   .story__grid {
     grid-template-columns: 1fr;

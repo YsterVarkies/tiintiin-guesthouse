@@ -137,7 +137,6 @@ export default function Story() {
           <div className="story__visual-inner">
             <Img name="stoep" className={`story__fallback ${webgl && loaded ? 'is-hidden' : ''}`} sizes="(max-width: 900px) 100vw, 46vw" alt="The blue-bottle chime and painted stoep at TiinTiin" />
             {webgl && <div className="story__canvas" ref={canvasRef} aria-hidden="true" />}
-            <p className="story__caption tag">{'{ the blue-bottle stoep, rebuilt in 3D }'}</p>
           </div>
         </div>
       </div>

@@ -12,7 +12,6 @@ import Reviews from './components/Reviews';
 import Location from './components/Location';
 import Book from './components/Book';
 import Footer from './components/Footer';
-import Cursor from './components/Cursor';
 
 export default function App() {
   const [ready, setReady] = useState(false);
@@ -54,7 +53,6 @@ export default function App() {
         <Book />
       </main>
       <Footer />
-      <Cursor />
       <div className="grain" aria-hidden="true" />
     </>
   );
