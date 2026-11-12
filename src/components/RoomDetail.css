@@ -11,6 +11,9 @@
   color: #fff;
   overflow: hidden;
   overscroll-behavior: contain;
+  /* Opaque from the first frame, so the page behind never shows through the open/close
+     fade or a mid-transition screenshot — .rd__bg's colour gradient fades in on top of this. */
+  background: #0a0b0d;
 }
 
 .rd__bg {
