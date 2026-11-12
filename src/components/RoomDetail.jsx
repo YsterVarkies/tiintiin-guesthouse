@@ -125,6 +125,76 @@ export default function RoomDetail({ index, flipState, onClose }) {
     );
   }, [photo, reduce]);
 
+  // ---------- swipe (touch or mouse drag) and scroll/wheel through a room's own photos ----------
+  const archRef = useRef(null);
+  const liveLen = useRef(room.images.length);
+  useEffect(() => {
+    liveLen.current = room.images.length;
+  });
+  useEffect(() => {
+    const el = archRef.current;
+    if (!el) return undefined;
+
+    const stepPhoto = (dir) => {
+      const len = liveLen.current;
+      if (len < 2) return;
+      photoAnim.current = true;
+      setPhoto((p) => (p + dir + len) % len);
+    };
+
+    const THRESHOLD = 36;
+    let down = false;
+    let moved = false;
+    let startX = 0;
+    let startY = 0;
+
+    const onPointerDown = (e) => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      down = true;
+      moved = false;
+      startX = e.clientX;
+      startY = e.clientY;
+      el.setPointerCapture?.(e.pointerId);
+    };
+    const onPointerMove = (e) => {
+      if (!down) return;
+      if (Math.abs(e.clientX - startX) > 6 || Math.abs(e.clientY - startY) > 6) moved = true;
+    };
+    const onPointerUp = (e) => {
+      if (!down) return;
+      down = false;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      if (moved && Math.abs(dx) > THRESHOLD && Math.abs(dx) > Math.abs(dy)) stepPhoto(dx < 0 ? 1 : -1);
+    };
+
+    // Desktop: a plain mouse wheel over the photo also steps through it (the dialog doesn't
+    // otherwise scroll on desktop, so this is free to use); debounced so one notch = one step.
+    let lastWheel = 0;
+    const onWheel = (e) => {
+      const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      if (!delta) return;
+      e.preventDefault();
+      const now = performance.now();
+      if (now - lastWheel < 420) return;
+      lastWheel = now;
+      stepPhoto(delta > 0 ? 1 : -1);
+    };
+
+    el.addEventListener('pointerdown', onPointerDown);
+    el.addEventListener('pointermove', onPointerMove);
+    el.addEventListener('pointerup', onPointerUp);
+    el.addEventListener('pointercancel', onPointerUp);
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => {
+      el.removeEventListener('pointerdown', onPointerDown);
+      el.removeEventListener('pointermove', onPointerMove);
+      el.removeEventListener('pointerup', onPointerUp);
+      el.removeEventListener('pointercancel', onPointerUp);
+      el.removeEventListener('wheel', onWheel);
+    };
+  }, []);
+
   // ---------- switch room: "out" half ----------
   const go = useCallback(
     (next, direction) => {
@@ -293,7 +363,7 @@ export default function RoomDetail({ index, flipState, onClose }) {
 
         <div className="rd__stage">
           <div className="rd__stage-tilt">
-            <div className="rd__arch" data-flip-id={`room-${room.id}`}>
+            <div className="rd__arch" ref={archRef} data-flip-id={`room-${room.id}`}>
               <Img
                 key={room.images[photo]}
                 name={room.images[photo]}
@@ -303,6 +373,11 @@ export default function RoomDetail({ index, flipState, onClose }) {
                 alt={`${name} room, photo ${photo + 1} of ${room.images.length}`}
               />
               <span className="rd__arch-light" aria-hidden="true" />
+              {room.images.length > 1 && (
+                <span className="rd__photo-count" aria-hidden="true">
+                  {photo + 1} / {room.images.length}
+                </span>
+              )}
             </div>
           </div>
           {PEBBLES.map((p, i) => (
