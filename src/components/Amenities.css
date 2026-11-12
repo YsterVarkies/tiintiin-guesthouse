@@ -1,0 +1,190 @@
+.amen {
+  position: relative;
+  overflow: hidden;
+}
+
+.amen__pin {
+  position: relative;
+  height: 100svh;
+  min-height: 640px;
+  display: flex;
+  align-items: center;
+}
+
+.amen__track {
+  display: flex;
+  align-items: stretch;
+  gap: clamp(18px, 2vw, 32px);
+  height: min(72svh, 720px);
+  padding: 0 var(--pad);
+  will-change: transform;
+}
+
+.amen__intro {
+  flex: 0 0 auto;
+  width: clamp(340px, 34vw, 560px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 26px;
+  padding-right: clamp(10px, 3vw, 60px);
+}
+.amen__title {
+  font-size: clamp(48px, 5.6vw, 104px);
+  color: var(--paper-ink);
+}
+.amen__accent {
+  color: var(--cobalt);
+  font-weight: 330;
+}
+.amen__lede {
+  max-width: 26em;
+  font-size: 16px;
+  line-height: 1.6;
+}
+.amen__hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--paper-ink);
+}
+
+/* SpotlightCard is the frame; we override its padding and surface */
+.amen__card.spotlight-card {
+  flex: 0 0 auto;
+  width: clamp(320px, 31vw, 520px);
+  height: 100%;
+  padding: 0;
+  border-radius: var(--radius-lg);
+  background-color: #ddd3c3;
+  box-shadow: 0 40px 70px -40px rgba(40, 28, 10, 0.45);
+}
+.amen__card:nth-of-type(even) {
+  margin-top: 6svh;
+  height: calc(100% - 6svh);
+}
+
+.amen__media {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  z-index: 0;
+}
+.amen__media img {
+  position: absolute;
+  top: 0;
+  left: -10%;
+  width: 120%;
+  height: 100%;
+  object-fit: cover;
+}
+.amen__media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 45%, rgba(10, 8, 6, 0.55) 100%);
+}
+
+.amen__glass {
+  position: absolute;
+  z-index: 2;
+  left: 14px;
+  right: 14px;
+  bottom: 14px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 14px;
+  align-items: start;
+  padding: 16px 18px;
+  border-radius: 18px;
+  color: #fff;
+  background: rgba(22, 20, 18, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  backdrop-filter: blur(18px) saturate(1.3);
+}
+.amen__icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--cream);
+  color: var(--ink);
+}
+.amen__name {
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 560;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin: 2px 0 6px;
+}
+.amen__text {
+  font-size: 14px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.85);
+}
+.amen__num {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 15px;
+  opacity: 0.7;
+}
+
+.amen__progress {
+  position: absolute;
+  left: var(--pad);
+  right: var(--pad);
+  bottom: clamp(24px, 5svh, 48px);
+  height: 2px;
+  background: rgba(25, 22, 18, 0.12);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.amen__progress span {
+  display: block;
+  height: 100%;
+  background: var(--paper-ink);
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+}
+
+@media (max-width: 900px) {
+  .amen__pin {
+    height: auto;
+    min-height: 0;
+    display: block;
+    padding: 90px 0 60px;
+  }
+  .amen__track {
+    flex-direction: column;
+    height: auto;
+    gap: 18px;
+  }
+  .amen__intro {
+    width: 100%;
+    padding: 0 0 20px;
+  }
+  .amen__card.spotlight-card {
+    width: 100%;
+    height: 72svh;
+    max-height: 560px;
+  }
+  .amen__card:nth-of-type(even) {
+    margin-top: 0;
+    height: 72svh;
+  }
+  .amen__progress {
+    display: none;
+  }
+}
+
+/* let the React Bits spotlight wash over the photo instead of hiding behind it */
+.amen__card .spotlight-card__light {
+  z-index: 1;
+  mix-blend-mode: soft-light;
+}

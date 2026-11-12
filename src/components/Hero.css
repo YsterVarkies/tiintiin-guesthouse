@@ -1,0 +1,349 @@
+.hero {
+  /* stage geometry: the photo (3:2) covering the viewport */
+  --vh: max(100svh, 600px);
+  --S: max(100vw, calc(var(--vh) * 1.5), 900px);
+  --SH: calc(var(--S) / 1.5);
+  --ST: calc((var(--vh) - var(--SH)) / 2);
+  position: relative;
+  height: 100svh;
+  min-height: 600px;
+  overflow: hidden;
+  background: #11183b;
+  isolation: isolate;
+}
+
+/* The stage has the photo's 3:2 ratio and always covers the viewport, so pins in %
+   of the photo land on the same spot of the gate at every screen size. */
+.hero__stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--S);
+  aspect-ratio: 3 / 2;
+  translate: -50% -50%;
+  will-change: transform;
+  pointer-events: none;
+}
+.hero__stage--back {
+  z-index: 1;
+}
+.hero__stage--front {
+  z-index: 3;
+}
+.hero__stage--ui {
+  z-index: 6;
+}
+
+.hero__layer {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+
+.hero__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+}
+
+/* ---------- giant title ---------- */
+/* Sized and placed in photo units, so the bottom of "Guesthouse" always tucks
+   behind the rusted TIINTIIN sign and the tent, like Norvik's roofline. */
+.hero__title {
+  --fs: min(calc(var(--S) * 0.094), 15.6vw);
+  position: absolute;
+  z-index: 2;
+  left: var(--pad);
+  top: calc(var(--ST) + var(--SH) * 0.426 - var(--fs) * 1.52);
+  margin: 0;
+  pointer-events: none;
+}
+.hero__title-inner {
+  display: block;
+  font-size: var(--fs);
+  line-height: 0.84;
+  font-weight: 650;
+  color: #fff;
+}
+.hero__line {
+  display: block;
+  white-space: nowrap;
+  padding-right: 0.06em;
+  letter-spacing: -0.058em;
+}
+/* the dotted i's need air or they fuse into a bar */
+.hero__line:first-child {
+  letter-spacing: -0.022em;
+}
+.hero__char {
+  display: inline-block;
+  will-change: transform;
+}
+
+.hero__atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.hero__shade {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(8, 11, 26, 0) 52%, rgba(9, 10, 14, 0.5) 82%, rgba(9, 10, 12, 0.78) 100%),
+    radial-gradient(120% 90% at 30% 40%, rgba(0, 0, 0, 0) 55%, rgba(6, 8, 18, 0.38) 100%);
+}
+.hero__shade--scroll {
+  background: var(--ink);
+  opacity: 0;
+}
+.hero__veil {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: #06070a;
+  pointer-events: none;
+}
+
+/* ---------- hotspot cards (pinned to the photo) ---------- */
+.hotspot {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: auto;
+}
+.hotspot__dot {
+  position: absolute;
+  left: -8px;
+  top: -8px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.6);
+  animation: hotspot-pulse 2.6s var(--ease) infinite;
+}
+@keyframes hotspot-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.55); }
+  70% { box-shadow: 0 0 0 14px rgba(255, 255, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+}
+.hotspot__line {
+  position: absolute;
+  left: -0.5px;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.75);
+}
+.hotspot--up .hotspot__line {
+  bottom: 8px;
+  height: clamp(36px, 5vh, 64px);
+  transform-origin: 50% 100%;
+}
+.hotspot--down .hotspot__line {
+  top: 8px;
+  height: clamp(28px, 4vh, 48px);
+  transform-origin: 50% 0%;
+}
+
+.hotspot__card {
+  position: absolute;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 16px;
+  width: clamp(270px, 17.4vw, 340px);
+  padding: 12px 18px 16px 12px;
+  color: #fff;
+}
+.hotspot--up .hotspot__card {
+  left: -14px;
+  bottom: calc(8px + clamp(36px, 5vh, 64px));
+}
+.hotspot--down .hotspot__card {
+  left: -14px;
+  top: calc(8px + clamp(28px, 4vh, 48px));
+}
+.hotspot__card.is-flipped {
+  grid-template-columns: 1fr auto;
+  padding: 14px 12px 14px 18px;
+}
+.hotspot__card.is-flipped .hotspot__thumb {
+  order: 2;
+}
+.hotspot__thumb {
+  width: clamp(92px, 6.2vw, 116px);
+  aspect-ratio: 4 / 5;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.hotspot__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.2s var(--ease);
+}
+.hotspot__card:hover .hotspot__thumb img {
+  transform: scale(1.08);
+}
+.hotspot__title {
+  font-family: var(--font-display);
+  font-size: clamp(18px, 1.2vw, 22px);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  margin: 2px 0 10px;
+}
+.hotspot__text {
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+/* ---------- bottom-left intro ---------- */
+.hero__intro {
+  position: absolute;
+  z-index: 7;
+  left: var(--pad);
+  bottom: clamp(28px, 5vh, 56px);
+  width: min(340px, 74vw);
+}
+.hero__lede {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(22px, 1.65vw, 30px);
+  line-height: 1.08;
+  letter-spacing: -0.032em;
+  margin-bottom: 18px;
+  max-width: 12.5em;
+}
+.hero__copy {
+  font-size: 14.5px;
+  line-height: 1.42;
+  color: rgba(255, 255, 255, 0.84);
+  text-indent: 1.9em;
+  max-width: 300px;
+}
+.hero__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin-top: 12px;
+}
+.hero__tags .tag {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* ---------- bottom-right scroll button ---------- */
+.hero__scroll {
+  position: absolute;
+  z-index: 7;
+  right: var(--pad);
+  bottom: clamp(26px, 4.6vh, 52px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.hero__scroll-label {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+}
+.hero__scroll-btn {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 104px;
+  height: 104px;
+}
+.hero__ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.hero__ring circle {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.55);
+  stroke-width: 1;
+  stroke-linecap: round;
+}
+.hero__scroll-core {
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--ink);
+  transition: transform 0.6s var(--ease), background-color 0.4s;
+}
+.hero__scroll:hover .hero__scroll-core {
+  transform: scale(1.08);
+  background: var(--amber);
+}
+.hero__scroll:hover .hero__scroll-core svg {
+  animation: nudge 0.9s var(--ease) infinite alternate;
+}
+@keyframes nudge {
+  to { transform: translateY(4px); }
+}
+
+@media (max-width: 1100px) {
+  .hotspot--up {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .hotspot {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .hero__intro {
+    bottom: 26px;
+    width: calc(100vw - 2 * var(--pad) - 70px);
+  }
+  .hero__lede {
+    font-size: 21px;
+    margin-bottom: 10px;
+  }
+  .hero__copy {
+    display: none;
+  }
+  .hero__scroll {
+    bottom: 22px;
+  }
+  .hero__scroll-label {
+    display: none;
+  }
+  .hero__scroll-btn {
+    width: 64px;
+    height: 64px;
+  }
+  .hero__scroll-core {
+    width: 48px;
+    height: 48px;
+  }
+}
+.hero__atmosphere canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Portrait screens crop into the sign, so lift the title until the stars only nibble its base. */
+@media (max-aspect-ratio: 4/5) {
+  .hero__title {
+    top: calc(var(--ST) + var(--SH) * 0.392 - var(--fs) * 1.52);
+  }
+}

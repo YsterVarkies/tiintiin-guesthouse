@@ -1,0 +1,207 @@
+.book {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: clamp(110px, 12vw, 170px) var(--pad);
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--cobalt-deep);
+}
+
+.book__photo {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+}
+.book__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.book__veil {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(70% 70% at 50% 50%, rgba(15, 26, 85, 0.72), rgba(9, 13, 40, 0.94)),
+    linear-gradient(180deg, rgba(13, 14, 16, 0.6), rgba(13, 14, 16, 0) 20%, rgba(13, 14, 16, 0) 80%, rgba(13, 14, 16, 0.7));
+}
+
+.book__panel {
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 26px;
+}
+.book__title {
+  font-size: clamp(64px, 10vw, 180px);
+  color: #fff;
+}
+.book__accent {
+  color: var(--amber);
+  font-weight: 320;
+}
+.book__lede {
+  font-size: clamp(17px, 1.4vw, 21px);
+  color: rgba(255, 255, 255, 0.85);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.35em;
+}
+.book__rotator {
+  display: inline-flex;
+  overflow: hidden;
+  padding: 0.05em 0.5em 0.12em;
+  border-radius: 999px;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 560;
+  letter-spacing: -0.02em;
+}
+.book__rotator-split {
+  overflow: hidden;
+  padding-bottom: 0.05em;
+}
+
+.book__form {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+  padding: 12px;
+  border-radius: 28px;
+  background: rgba(10, 12, 30, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  backdrop-filter: blur(20px) saturate(1.2);
+  text-align: left;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 16px 12px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid transparent;
+  transition: border-color 0.3s, background-color 0.3s;
+  cursor: pointer;
+}
+.field:focus-within {
+  border-color: var(--amber);
+  background: rgba(255, 255, 255, 0.1);
+}
+.field__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+}
+.field input,
+.field select {
+  width: 100%;
+  font: inherit;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: #fff;
+  background: transparent;
+  border: 0;
+  outline: none;
+  padding: 0;
+  color-scheme: dark;
+  cursor: pointer;
+}
+.field select option {
+  background: #141831;
+  color: #fff;
+}
+
+.book__summary {
+  grid-column: 1 / -1;
+  padding: 4px 6px 0;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.75);
+}
+.book__error {
+  color: var(--amber-2);
+}
+
+.book__actions {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.book__primary {
+  height: 58px;
+  padding: 0 30px;
+  font-size: 17px;
+}
+.book__wa {
+  --pill-bg: #1f8f55;
+}
+.book__wa:hover {
+  --pill-bg: #fff;
+}
+.book__fine {
+  grid-column: 1 / -1;
+  padding: 0 6px 4px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+}
+.book__fine a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.book__rules {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+.book__rules li {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  font-size: 13.5px;
+}
+.book__rules .muted {
+  color: rgba(255, 255, 255, 0.6);
+  margin-right: 4px;
+}
+
+@media (max-width: 900px) {
+  .book__form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 520px) {
+  .book__form {
+    grid-template-columns: 1fr;
+    border-radius: 22px;
+  }
+  .book__actions > * {
+    width: 100%;
+  }
+  .book__actions .pill {
+    width: 100%;
+  }
+}

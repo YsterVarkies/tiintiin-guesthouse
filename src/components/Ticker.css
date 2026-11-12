@@ -1,0 +1,30 @@
+.ticker {
+  position: relative;
+  padding: clamp(40px, 6vw, 90px) 0 clamp(20px, 3vw, 40px);
+  background: var(--paper);
+  color: var(--paper-ink);
+  overflow: hidden;
+}
+
+.ticker__parallax {
+  position: relative;
+  overflow: hidden;
+}
+
+.ticker__scroller {
+  display: flex;
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-weight: 620;
+  font-size: clamp(56px, 9.5vw, 170px);
+  line-height: 1.04;
+  letter-spacing: -0.055em;
+}
+.ticker__scroller span {
+  flex-shrink: 0;
+  padding-right: 0.3em;
+}
+.ticker__parallax:nth-child(2) .ticker__scroller {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--paper-ink);
+}

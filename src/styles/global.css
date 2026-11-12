@@ -1,0 +1,446 @@
+/* ==========================================================================
+   TiinTiin Guesthouse — design tokens & base
+   Mountain-Retreat language: charcoal night, warm amber, cream pills, glass cards,
+   giant tight grotesk, with TiinTiin's cobalt and rust as signatures.
+   ========================================================================== */
+
+:root {
+  --ink: #0d0e10;
+  --ink-2: #141518;
+  --ink-3: #1d1f23;
+  --ink-4: #2a2d32;
+  --line: rgba(255, 255, 255, 0.12);
+  --line-strong: rgba(255, 255, 255, 0.24);
+  --mist: #a7abb2;
+  --mist-2: #7d8189;
+
+  --cream: #f3eee6;
+  --paper: #ebe4d8;
+  --paper-2: #e2d9ca;
+  --paper-ink: #191612;
+  --paper-mist: #6f675c;
+
+  --amber: #eaa94b;
+  --amber-2: #f6c983;
+  --cobalt: #3157e0;
+  --cobalt-2: #1a2c8c;
+  --cobalt-deep: #0f1a55;
+  --rust: #b15b2b;
+
+  --glass: rgba(22, 23, 26, 0.46);
+  --glass-strong: rgba(14, 15, 17, 0.72);
+  --glass-border: rgba(255, 255, 255, 0.14);
+
+  --font-display: 'Inter Tight Variable', 'Inter Tight', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'Inter Variable', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --font-serif: 'Fraunces Variable', 'Fraunces', Georgia, serif;
+
+  --pad: clamp(20px, 3.4vw, 56px);
+  --radius: 22px;
+  --radius-lg: 30px;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--ink);
+  color: #fff;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped,
+html.is-locked {
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+  font-weight: 400;
+  letter-spacing: -0.006em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--amber);
+  color: var(--ink);
+}
+
+img,
+canvas,
+video,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+figure,
+blockquote {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  left: 16px;
+  top: 16px;
+  z-index: 1000;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--cream);
+  color: var(--ink);
+  transform: translateY(-150%);
+  transition: transform 0.3s var(--ease);
+}
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+/* ---------- type ---------- */
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 640;
+  letter-spacing: -0.058em;
+  line-height: 0.86;
+}
+
+.h-xl {
+  font-family: var(--font-display);
+  font-weight: 620;
+  font-size: clamp(44px, 7.4vw, 132px);
+  letter-spacing: -0.055em;
+  line-height: 0.9;
+}
+
+.h-lg {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(36px, 5vw, 84px);
+  letter-spacing: -0.05em;
+  line-height: 0.95;
+}
+
+.h-md {
+  font-family: var(--font-display);
+  font-weight: 560;
+  font-size: clamp(26px, 2.6vw, 40px);
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+}
+
+.serif-i {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 340;
+  letter-spacing: -0.02em;
+  font-variation-settings: 'opsz' 144, 'SOFT' 60, 'WONK' 1;
+}
+
+.tag {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 360;
+  font-size: 15px;
+  letter-spacing: 0;
+  color: var(--mist);
+  font-variation-settings: 'opsz' 14, 'SOFT' 50;
+}
+
+.lede {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(20px, 1.7vw, 28px);
+  line-height: 1.16;
+  letter-spacing: -0.028em;
+}
+
+.muted {
+  color: var(--mist);
+}
+
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 560;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--mist);
+}
+
+/* ---------- pills & buttons (Mountain Retreat nav language) ---------- */
+
+.pill {
+  --pill-bg: var(--glass);
+  --pill-fg: #fff;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55em;
+  height: 42px;
+  padding: 0 19px;
+  border-radius: 999px;
+  background: var(--pill-bg);
+  color: var(--pill-fg);
+  font-size: 15px;
+  font-weight: 450;
+  letter-spacing: -0.012em;
+  white-space: nowrap;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  -webkit-backdrop-filter: blur(16px) saturate(1.25);
+  backdrop-filter: blur(16px) saturate(1.25);
+  transition:
+    background-color 0.45s var(--ease),
+    color 0.45s var(--ease),
+    border-color 0.45s var(--ease);
+  isolation: isolate;
+  overflow: hidden;
+}
+.pill:hover {
+  --pill-bg: rgba(255, 255, 255, 0.92);
+  --pill-fg: var(--ink);
+}
+.pill--cream {
+  --pill-bg: var(--cream);
+  --pill-fg: var(--ink);
+  border-color: transparent;
+}
+.pill--cream:hover {
+  --pill-bg: var(--amber);
+}
+.pill--amber {
+  --pill-bg: var(--amber);
+  --pill-fg: var(--ink);
+  border-color: transparent;
+}
+.pill--amber:hover {
+  --pill-bg: var(--cream);
+}
+.pill--ink {
+  --pill-bg: var(--ink);
+  --pill-fg: var(--cream);
+}
+.pill--ink:hover {
+  --pill-bg: var(--cobalt);
+  --pill-fg: #fff;
+}
+.pill--outline {
+  --pill-bg: transparent;
+  border-color: var(--line-strong);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.pill--lg {
+  height: 54px;
+  padding: 0 26px;
+  font-size: 16px;
+}
+.pill svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+/* rolling label on hover */
+.roll {
+  display: inline-grid;
+  overflow: hidden;
+  height: 1.25em;
+  line-height: 1.25em;
+}
+.roll > span {
+  grid-area: 1 / 1;
+  transition: transform 0.6s var(--ease);
+}
+.roll > span:last-child {
+  transform: translateY(105%);
+}
+a:hover > .roll > span:first-child,
+button:hover > .roll > span:first-child {
+  transform: translateY(-105%);
+}
+a:hover > .roll > span:last-child,
+button:hover > .roll > span:last-child {
+  transform: translateY(0);
+}
+
+/* small lowercase section label, styled as a pill */
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 34px;
+  padding: 0 15px 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  font-size: 14px;
+  letter-spacing: -0.01em;
+  color: rgba(255, 255, 255, 0.86);
+}
+.label::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--amber);
+  box-shadow: 0 0 0 4px rgba(234, 169, 75, 0.18);
+}
+.on-paper .label {
+  border-color: rgba(25, 22, 18, 0.2);
+  color: var(--paper-ink);
+}
+
+/* glass hotspot card */
+.glass-card {
+  position: relative;
+  border-radius: var(--radius);
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  backdrop-filter: blur(18px) saturate(1.3);
+  box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.55);
+}
+
+/* ---------- layout ---------- */
+
+.section {
+  position: relative;
+  padding: clamp(96px, 13vw, 200px) var(--pad);
+}
+
+.container {
+  width: 100%;
+  max-width: 1480px;
+  margin-inline: auto;
+}
+
+.on-paper {
+  background: var(--paper);
+  color: var(--paper-ink);
+}
+.on-paper .muted {
+  color: var(--paper-mist);
+}
+
+/* film grain over everything (very subtle) */
+.grain {
+  position: fixed;
+  inset: -50%;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 1.2s steps(6) infinite;
+  mix-blend-mode: overlay;
+}
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-4%, 3%); }
+  40% { transform: translate(3%, -2%); }
+  60% { transform: translate(-2%, -4%); }
+  80% { transform: translate(4%, 2%); }
+  100% { transform: translate(0, 0); }
+}
+
+/* image reveal helper */
+.media {
+  position: relative;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+}
+.media > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* star glyph used in the wordmark, from the rusted gate sign */
+.star {
+  display: inline-block;
+  width: 0.62em;
+  height: 0.62em;
+  vertical-align: 0.06em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .grain {
+    display: none;
+  }
+}

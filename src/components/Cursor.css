@@ -1,0 +1,50 @@
+.cursor {
+  display: none;
+}
+
+.has-cursor .cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 150;
+  display: grid;
+  place-items: center;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  border-radius: 50%;
+  background: var(--cream);
+  mix-blend-mode: difference;
+  pointer-events: none;
+  transition:
+    width 0.45s var(--ease),
+    height 0.45s var(--ease),
+    margin 0.45s var(--ease),
+    background-color 0.3s;
+}
+
+.cursor[data-mode='link'] {
+  width: 46px;
+  height: 46px;
+  margin: -23px 0 0 -23px;
+}
+
+.cursor[data-mode='label'] {
+  width: 96px;
+  height: 96px;
+  margin: -48px 0 0 -48px;
+  background: var(--amber);
+  mix-blend-mode: normal;
+}
+
+.cursor__label {
+  font-size: 13px;
+  font-weight: 560;
+  color: var(--ink);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.cursor[data-mode='label'] .cursor__label {
+  opacity: 1;
+}
