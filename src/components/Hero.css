@@ -1,7 +1,8 @@
 .hero {
-  /* stage geometry: the photo (3:2) covering the viewport */
+  /* stage geometry: the photo (3:2) covering the viewport, plus a little bleed so the
+     pointer parallax (±16px / ±10px) never drifts an edge into view */
   --vh: max(100svh, 600px);
-  --S: max(100vw, calc(var(--vh) * 1.5), 900px);
+  --S: max(calc(100vw + 40px), calc(var(--vh) * 1.5 + 30px), 900px);
   --SH: calc(var(--S) / 1.5);
   --ST: calc((var(--vh) - var(--SH)) / 2);
   position: relative;
@@ -16,11 +17,13 @@
    of the photo land on the same spot of the gate at every screen size. */
 .hero__stage {
   position: absolute;
-  left: 50%;
-  top: 50%;
+  /* Centred with left/top on purpose, never the CSS `translate` property: GSAP folds `translate`
+     into its own x/y once (in px), and the pointer parallax then overwrote those x/y with a few
+     px, shoving the photo half a screen down and right. */
+  left: calc(50% - var(--S) / 2);
+  top: var(--ST);
   width: var(--S);
   aspect-ratio: 3 / 2;
-  translate: -50% -50%;
   will-change: transform;
   pointer-events: none;
 }
@@ -348,8 +351,8 @@
   }
 }
 
-/* Touch devices: the hero scrolls natively with no scroll-linked transforms (see Hero.jsx),
-   so don't keep full-screen GPU layers open for the photo stages at the phone's pixel density. */
+/* Touch devices: no script ever moves the hero while scrolling (see Hero.jsx). A phone scrolls on
+   its own thread and anything JS-driven lands behind it, which is what made the photo judder. */
 @media (pointer: coarse) {
   .hero__stage,
   .hero__layer {
@@ -358,4 +361,62 @@
   .hero__shade--scroll {
     display: none;
   }
+}
+
+/* ...instead the same parallax as desktop (photo sinks, title rises, scene darkens into the next
+   section) is a CSS scroll-driven animation, which the browser runs on the compositor in step
+   with the native scroll: iOS/Safari 26.3+ and Chrome for Android. Browsers without it keep the
+   still hero. Keyframes animate `transform` with explicit start values (WebKit's threaded path
+   mishandles `translate`/`none` keyframes), and nothing here touches opacity on elements whose
+   intro GSAP fades in, so the two never fight. */
+@supports (animation-timeline: view()) {
+  @media (pointer: coarse) and (prefers-reduced-motion: no-preference) {
+    .hero {
+      view-timeline: --hero block;
+    }
+    .hero__stage,
+    .hero__title,
+    .hero__intro,
+    .hero__scroll,
+    .hero__shade--scroll {
+      animation-duration: 1ms; /* fallback where `auto` isn't parsed; a scroll timeline stretches it */
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: --hero;
+      animation-range-start: exit 0%;
+      animation-range-end: exit 100%;
+    }
+    .hero__stage {
+      animation-name: hero-sink;
+      will-change: transform;
+    }
+    .hero__title {
+      animation-name: hero-title-rise;
+    }
+    .hero__intro,
+    .hero__scroll {
+      animation-name: hero-ui-rise;
+    }
+    .hero__shade--scroll {
+      display: block;
+      animation-name: hero-darken;
+    }
+  }
+}
+@keyframes hero-sink {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(0, 14%, 0); }
+}
+@keyframes hero-title-rise {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(0, -38%, 0); }
+}
+@keyframes hero-ui-rise {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(0, -60px, 0); }
+}
+@keyframes hero-darken {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }

@@ -142,7 +142,9 @@ export default function Hero({ ready }) {
       // Touch devices stop here. A phone scrolls the page on its own fast thread, and anything
       // script-driven and tied to scroll position lands a frame (or, on a busy page, several)
       // behind it — on iPhone that showed as the hero photo juddering up and down while you
-      // scrolled. So on touch the hero simply scrolls with the page: no parallax, no breathing.
+      // scrolled. So on touch the scroll parallax is pure CSS (a scroll-driven animation the
+      // browser runs in step with the scroll, see Hero.css), and GSAP must not touch the
+      // transforms of .hero__stage / .hero__title / .hero__intro / .hero__scroll there.
       if (touch) return undefined;
 
       // Slow "breathing" camera so the still photo feels filmed.

@@ -254,10 +254,11 @@
   pointer-events: none;
 }
 
+/* centred on its x/y with negative margins (set inline from the size), not `translate`:
+   GSAP animates this element and would fold `translate` into its own x/y */
 .rd__pebble {
   position: absolute;
   z-index: 3;
-  translate: -50% -50%;
   pointer-events: none;
 }
 .rd__pebble-inner {

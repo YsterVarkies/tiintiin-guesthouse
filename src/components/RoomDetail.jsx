@@ -388,7 +388,14 @@ export default function RoomDetail({ index, flipState, onClose }) {
             <span
               className="rd__pebble"
               key={`${room.id}-${i}`}
-              style={{ left: `${p.x}%`, top: `${p.y}%`, width: p.size, height: p.size }}
+              style={{
+                left: `${p.x}%`,
+                top: `${p.y}%`,
+                width: p.size,
+                height: p.size,
+                marginLeft: -p.size / 2,
+                marginTop: -p.size / 2,
+              }}
               aria-hidden="true"
             >
               <span className="rd__pebble-inner" data-depth={p.depth}>

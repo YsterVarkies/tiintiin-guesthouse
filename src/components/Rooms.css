@@ -119,11 +119,11 @@
 .niche__lamp {
   position: absolute;
   z-index: 4;
-  left: 50%;
+  /* centred by left (50% - 34%/2), not `translate`, which GSAP's scale tween would bake into px */
+  left: 33%;
   top: 7%;
   width: 34%;
   height: 10px;
-  translate: -50% 0;
   border-radius: 50%;
   background: radial-gradient(closest-side, rgba(255, 238, 210, 0.95), rgba(255, 210, 150, 0.35) 55%, transparent);
   filter: blur(2px);
