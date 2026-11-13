@@ -81,6 +81,12 @@
 .hero__line:first-child {
   letter-spacing: -0.022em;
 }
+/* SplitText's line mask clips at the text box, but the tight tracking lets the last glyph
+   (the final "e") overhang it, so the mask gets extra room on the right without moving the text */
+.hero__line > * {
+  padding-right: 0.16em;
+  margin-right: -0.16em;
+}
 .hero__char {
   display: inline-block;
   will-change: transform;
