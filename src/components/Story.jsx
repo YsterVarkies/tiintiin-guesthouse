@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { gsap, ScrollTrigger, useGSAP, prefersReducedMotion, scrollVelocity } from '../lib/motion';
+import { gsap, ScrollTrigger, useGSAP, prefersReducedMotion, isCoarsePointer, scrollVelocity } from '../lib/motion';
 import { imageUrl } from '../lib/images';
 import { rating } from '../data/site';
 import ScrollReveal from './reactbits/ScrollReveal';
@@ -16,6 +16,8 @@ const stats = [
 
 export default function Story() {
   const root = useRef(null);
+  // Touch devices: lighter 3D, and nothing here is scrubbed to the scroll position (see Hero.jsx).
+  const [touch] = useState(isCoarsePointer);
   const canvasRef = useRef(null);
   const [webgl, setWebgl] = useState(true);
   const [loaded, setLoaded] = useState(false);
@@ -34,10 +36,14 @@ export default function Story() {
         chime = createBottleChime(host, {
           imageUrl: imageUrl('stoep', 1280),
           mobile: window.innerWidth < 760,
+          lite: touch,
           onReady: () => !cancelled && setLoaded(true),
         });
-        tick = () => chime?.wind(scrollVelocity());
-        gsap.ticker.add(tick);
+        // scroll "wind" comes from Lenis, which is desktop-only
+        if (!touch) {
+          tick = () => chime?.wind(scrollVelocity());
+          gsap.ticker.add(tick);
+        }
       } catch {
         if (!cancelled) setWebgl(false);
       }
@@ -54,7 +60,7 @@ export default function Story() {
       if (tick) gsap.ticker.remove(tick);
       chime?.dispose();
     };
-  }, []);
+  }, [touch]);
 
   useGSAP(
     () => {
@@ -68,6 +74,7 @@ export default function Story() {
         ease: 'expo.out',
         scrollTrigger: { trigger: q('.story__body')[0], start: 'top 85%' },
       });
+      if (touch) return;
       gsap.fromTo(
         q('.story__visual-inner'),
         { clipPath: 'inset(18% 10% 18% 10% round 220px 220px 28px 28px)' },
@@ -78,7 +85,7 @@ export default function Story() {
         }
       );
     },
-    { scope: root }
+    { scope: root, dependencies: [touch] }
   );
 
   return (
@@ -91,7 +98,7 @@ export default function Story() {
           </h2>
           <ScrollReveal
             baseOpacity={0.12}
-            enableBlur
+            enableBlur={!touch}
             blurStrength={6}
             baseRotation={0}
             containerClassName="story__statement-wrap"

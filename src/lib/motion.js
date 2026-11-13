@@ -7,6 +7,9 @@ import Lenis from 'lenis';
 
 gsap.registerPlugin(ScrollTrigger, SplitText, Flip, useGSAP);
 gsap.defaults({ ease: 'power3.out' });
+// Mobile browsers resize the viewport as their toolbar slides in and out while you scroll;
+// re-measuring every trigger at that moment causes visible jumps. Ignore those resizes.
+ScrollTrigger.config({ ignoreMobileResize: true });
 
 export { gsap, ScrollTrigger, SplitText, Flip, useGSAP };
 

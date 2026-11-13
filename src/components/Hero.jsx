@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { gsap, SplitText, useGSAP, prefersReducedMotion, isFinePointer, scrollToTarget } from '../lib/motion';
+import { gsap, SplitText, useGSAP, prefersReducedMotion, isFinePointer, isCoarsePointer, scrollToTarget } from '../lib/motion';
 import { heroSrc } from '../lib/images';
 import { createHeroAtmosphere } from '../three/heroAtmosphere';
 import { contact, hero, rating } from '../data/site';
@@ -99,6 +99,7 @@ export default function Hero({ ready }) {
       const stages = q('.hero__stage');
       const layers = q('.hero__layer');
       const reduce = prefersReducedMotion();
+      const touch = isCoarsePointer();
 
       if (!ready) {
         if (!reduce) {
@@ -118,7 +119,7 @@ export default function Hero({ ready }) {
 
       const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
       tl.to(layers, { scale: 1, duration: 2.8, ease: 'expo.out' }, 0)
-        .fromTo(q('.hero__veil'), { opacity: 1 }, { opacity: 0, duration: 1.8, ease: 'power2.out' }, 0)
+        .fromTo(q('.hero__veil'), { autoAlpha: 1 }, { autoAlpha: 0, duration: 1.8, ease: 'power2.out' }, 0)
         .set(q('.hero__title'), { autoAlpha: 1 }, 0.15)
         .from(
           lines.chars,
@@ -137,6 +138,12 @@ export default function Hero({ ready }) {
         .from(q('.hero__scroll-btn'), { scale: 0, duration: 1.1, ease: 'back.out(1.8)' }, 1.3)
         .from(q('.hero__scroll-label'), { autoAlpha: 0, x: 12, duration: 0.9 }, 1.5)
         .fromTo(q('.hero__ring circle'), { strokeDashoffset: 283 }, { strokeDashoffset: 18, duration: 1.6, ease: 'power3.inOut' }, 1.4);
+
+      // Touch devices stop here. A phone scrolls the page on its own fast thread, and anything
+      // script-driven and tied to scroll position lands a frame (or, on a busy page, several)
+      // behind it — on iPhone that showed as the hero photo juddering up and down while you
+      // scrolled. So on touch the hero simply scrolls with the page: no parallax, no breathing.
+      if (touch) return undefined;
 
       // Slow "breathing" camera so the still photo feels filmed.
       tl.to(layers, { scale: 1.028, duration: 16, ease: 'sine.inOut', repeat: -1, yoyo: true }, 2.8);

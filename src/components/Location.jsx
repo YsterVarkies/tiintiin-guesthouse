@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { gsap, ScrollTrigger, useGSAP, prefersReducedMotion } from '../lib/motion';
+import { gsap, ScrollTrigger, useGSAP, prefersReducedMotion, isCoarsePointer } from '../lib/motion';
 import { contact, nearby } from '../data/site';
 import Icon, { Star } from './ui/Icon';
 import './Location.css';
@@ -39,6 +39,8 @@ export default function Location() {
         ease: 'expo.out',
         scrollTrigger: { trigger: q('.nearby')[0], start: 'top 85%' },
       });
+      // the map's reveal is scrubbed to the scroll position: desktop only
+      if (isCoarsePointer()) return;
       gsap.fromTo(
         q('.location__map'),
         { clipPath: 'inset(12% 12% 12% 12% round 300px)' },

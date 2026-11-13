@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { gsap, useGSAP, prefersReducedMotion } from '../lib/motion';
+import { gsap, useGSAP, prefersReducedMotion, isCoarsePointer } from '../lib/motion';
 import { contact, rating, reviews } from '../data/site';
 import CountUp from './reactbits/CountUp/CountUp';
 import Icon, { Star } from './ui/Icon';
@@ -28,7 +28,8 @@ export default function Reviews() {
         ease: 'expo.out',
         scrollTrigger: { trigger: q('.reviews__quotes')[0], start: 'top 80%' },
       });
-      // the two quote columns drift at different speeds
+      // the two quote columns drift at different speeds (scrubbed to scroll: desktop only)
+      if (isCoarsePointer()) return;
       gsap.to(q('.reviews__col--b'), {
         yPercent: -14,
         ease: 'none',

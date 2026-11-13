@@ -347,3 +347,15 @@
     top: calc(var(--ST) + var(--SH) * 0.392 - var(--fs) * 1.52);
   }
 }
+
+/* Touch devices: the hero scrolls natively with no scroll-linked transforms (see Hero.jsx),
+   so don't keep full-screen GPU layers open for the photo stages at the phone's pixel density. */
+@media (pointer: coarse) {
+  .hero__stage,
+  .hero__layer {
+    will-change: auto;
+  }
+  .hero__shade--scroll {
+    display: none;
+  }
+}

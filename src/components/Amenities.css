@@ -153,7 +153,7 @@
   transform: scaleX(0);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 900px), (pointer: coarse) {
   .amen__pin {
     height: auto;
     min-height: 0;

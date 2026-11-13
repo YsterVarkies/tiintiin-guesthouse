@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { gsap, useGSAP, prefersReducedMotion } from '../lib/motion';
+import { gsap, useGSAP, prefersReducedMotion, isCoarsePointer } from '../lib/motion';
 import { contact, houseRules, rooms } from '../data/site';
 import Icon from './ui/Icon';
 import Magnet from './reactbits/Magnet/Magnet';
@@ -61,6 +61,8 @@ export default function Book() {
         ease: 'expo.out',
         scrollTrigger: { trigger: root.current, start: 'top 65%' },
       });
+      // photo parallax is scrubbed to the scroll position: desktop only (it judders on phones)
+      if (isCoarsePointer()) return;
       gsap.fromTo(
         q('.book__photo img'),
         { scale: 1.25, yPercent: -6 },

@@ -15,7 +15,7 @@ export default function Amenities() {
       const mm = gsap.matchMedia();
 
       // Desktop: pin the section and let the cards travel sideways.
-      mm.add('(min-width: 901px) and (prefers-reduced-motion: no-preference)', () => {
+      mm.add('(min-width: 901px) and (pointer: fine) and (prefers-reduced-motion: no-preference)', () => {
         const track = q('.amen__track')[0];
         const distance = () => track.scrollWidth - window.innerWidth;
         const tween = gsap.to(track, {
@@ -56,7 +56,7 @@ export default function Amenities() {
         });
       });
 
-      mm.add('(max-width: 900px) and (prefers-reduced-motion: no-preference)', () => {
+      mm.add('(max-width: 900px) and (prefers-reduced-motion: no-preference), (pointer: coarse) and (prefers-reduced-motion: no-preference)', () => {
         gsap.utils.toArray(q('.amen__card')).forEach((card) => {
           gsap.from(card, {
             y: 60,

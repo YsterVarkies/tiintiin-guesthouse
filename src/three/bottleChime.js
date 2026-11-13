@@ -42,10 +42,16 @@ function bottleProfile(kind) {
   ];
 }
 
-export function createBottleChime(container, { imageUrl, mobile = false, onReady } = {}) {
+/**
+ * @param {object} opts
+ * @param {boolean} [opts.mobile] narrow screen: fewer bottles, lower resolution
+ * @param {boolean} [opts.lite]   touch device: cheaper glass (no refraction pass), ~30fps, and the
+ *                                scene holds still while the page scrolls so the GPU is free for it.
+ */
+export function createBottleChime(container, { imageUrl, mobile = false, lite = false, onReady } = {}) {
   const canvas = document.createElement('canvas');
   container.appendChild(canvas);
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'high-performance' });
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: !lite, powerPreference: 'high-performance' });
   const dpr = Math.min(window.devicePixelRatio || 1, mobile ? 1.5 : 1.8);
   renderer.setPixelRatio(dpr);
   renderer.setClearColor(0x000000, 0);
@@ -88,6 +94,8 @@ export function createBottleChime(container, { imageUrl, mobile = false, onReady
     photoMat.map = tex;
     photoMat.color.set(0xb9bcc8);
     photoMat.needsUpdate = true;
+    // draw right away, so the canvas is never blank even if the page is mid-scroll (lite holds still then)
+    renderer.render(scene, camera);
     onReady?.();
   });
 
@@ -110,28 +118,43 @@ export function createBottleChime(container, { imageUrl, mobile = false, onReady
   archGroup.add(frame);
 
   // ---- bottles ----
-  const glass = new THREE.MeshPhysicalMaterial({
-    color: 0x86a2ff,
-    metalness: 0,
-    roughness: 0.025,
-    transmission: 1,
-    thickness: 0.32,
-    ior: 1.47,
-    dispersion: 0.25,
-    attenuationColor: new THREE.Color(0x1438d6),
-    attenuationDistance: 1.25,
-    clearcoat: 1,
-    clearcoatRoughness: 0.03,
-    specularIntensity: 1,
-    envMapIntensity: 1.7,
-  });
+  // Real glass (transmission + dispersion) renders the whole scene a second time every frame to
+  // refract it; on touch devices a transparent, clear-coated cobalt reads the same at phone size.
+  const glass = lite
+    ? new THREE.MeshPhysicalMaterial({
+        color: 0x1638d8,
+        metalness: 0,
+        roughness: 0.08,
+        transparent: true,
+        opacity: 0.8,
+        depthWrite: false,
+        clearcoat: 1,
+        clearcoatRoughness: 0.05,
+        specularIntensity: 0.9,
+        envMapIntensity: 0.9,
+      })
+    : new THREE.MeshPhysicalMaterial({
+        color: 0x86a2ff,
+        metalness: 0,
+        roughness: 0.025,
+        transmission: 1,
+        thickness: 0.32,
+        ior: 1.47,
+        dispersion: 0.25,
+        attenuationColor: new THREE.Color(0x1438d6),
+        attenuationDistance: 1.25,
+        clearcoat: 1,
+        clearcoatRoughness: 0.03,
+        specularIntensity: 1,
+        envMapIntensity: 1.7,
+      });
 
   const kinds = ['hock', 'cordial', 'apothecary'];
   const geos = Object.fromEntries(
     kinds.map((k) => {
       const g = new THREE.LatheGeometry(
         bottleProfile(k).map(([r, y]) => new THREE.Vector2(r, y)),
-        mobile ? 36 : 56
+        lite ? 32 : mobile ? 36 : 56
       );
       g.computeVertexNormals();
       return [k, g];
@@ -244,6 +267,12 @@ export function createBottleChime(container, { imageUrl, mobile = false, onReady
   let last = performance.now();
   let time = 0;
   let windTarget = 0;
+  let lastScroll = -1e9;
+  let lastDraw = 0;
+  const onScroll = () => {
+    lastScroll = performance.now();
+  };
+  if (lite) window.addEventListener('scroll', onScroll, { passive: true });
 
   const resize = () => {
     const w = canvas.clientWidth;
@@ -254,6 +283,7 @@ export function createBottleChime(container, { imageUrl, mobile = false, onReady
     // keep the arch framed on tall or narrow canvases
     camera.fov = camera.aspect < 0.62 ? 40 : 32;
     camera.updateProjectionMatrix();
+    renderer.render(scene, camera);
   };
   resize();
   const ro = new ResizeObserver(resize);
@@ -262,6 +292,16 @@ export function createBottleChime(container, { imageUrl, mobile = false, onReady
   const step = (now) => {
     raf = 0;
     if (!visible || document.hidden) return;
+    raf = requestAnimationFrame(step);
+    if (lite) {
+      // Touch: hold still while the page scrolls (the last frame stays on screen), ~30fps otherwise.
+      if (now - lastScroll < 160) {
+        last = now;
+        return;
+      }
+      if (now - lastDraw < 32) return;
+      lastDraw = now;
+    }
     const dt = Math.min((now - last) / 1000, 1 / 30);
     last = now;
     time += dt;
@@ -302,7 +342,6 @@ export function createBottleChime(container, { imageUrl, mobile = false, onReady
     camera.lookAt(0, 0.2, 0);
 
     renderer.render(scene, camera);
-    raf = requestAnimationFrame(step);
   };
 
   const io = new IntersectionObserver(([entry]) => {
@@ -332,6 +371,7 @@ export function createBottleChime(container, { imageUrl, mobile = false, onReady
       io.disconnect();
       ro.disconnect();
       document.removeEventListener('visibilitychange', onVis);
+      window.removeEventListener('scroll', onScroll);
       canvas.removeEventListener('pointermove', onMove);
       canvas.removeEventListener('pointerleave', onLeave);
       scene.traverse((o) => {
