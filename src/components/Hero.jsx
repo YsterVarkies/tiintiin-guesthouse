@@ -73,12 +73,16 @@ export default function Hero({ ready }) {
   const canvasRef = useRef(null);
   const atmosphere = useRef(null);
 
-  // Three.js atmosphere (dust + light shafts)
+  // Three.js atmosphere (dust + light shafts). Desktop only: a continuous WebGL shader fill
+  // competes for the same frame budget as Lenis's smooth scroll and the scroll-linked GSAP
+  // timeline below, which is what made scrolling past the hero feel laggy on phones. Pointer
+  // parallax and the glass hotspot cards already skip on mobile/touch for the same reason —
+  // the photo itself, and its CSS/GSAP parallax, are unaffected and still look good without it.
   useEffect(() => {
-    if (!canvasRef.current || prefersReducedMotion()) return undefined;
+    if (!canvasRef.current || prefersReducedMotion() || window.innerWidth < 760) return undefined;
     let api;
     try {
-      api = createHeroAtmosphere(canvasRef.current, { mobile: window.innerWidth < 760 });
+      api = createHeroAtmosphere(canvasRef.current);
     } catch {
       return undefined; // no WebGL: the photo still works on its own
     }

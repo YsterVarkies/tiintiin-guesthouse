@@ -118,10 +118,14 @@ export default function RoomDetail({ index, flipState, onClose }) {
   useLayoutEffect(() => {
     if (!photoAnim.current || reduce) return;
     photoAnim.current = false;
+    // The clip carries .rd__arch's own arch radius (999px 999px 26px 26px), so the image is
+    // self-clipped to the arch shape the instant it paints — on some mobile GPUs, a transformed
+    // child briefly ignores the parent's own overflow:hidden/border-radius clip, which otherwise
+    // shows the photo as a plain rectangle for a second or two before it "snaps" into the arch.
     gsap.fromTo(
       root.current.querySelector('.rd__main-img'),
-      { clipPath: 'inset(100% 0% 0% 0%)', scale: 1.15 },
-      { clipPath: 'inset(0% 0% 0% 0%)', scale: 1, duration: 1, ease: 'expo.out' }
+      { clipPath: 'inset(100% 0% 0% 0% round 999px 999px 26px 26px)', scale: 1.15 },
+      { clipPath: 'inset(0% 0% 0% 0% round 999px 999px 26px 26px)', scale: 1, duration: 1, ease: 'expo.out' }
     );
   }, [photo, reduce]);
 
